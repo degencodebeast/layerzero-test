@@ -1,0 +1,27 @@
+{
+  "exclude": ["node_modules"],
+  "include": ["src/**/*","deploy", "tasks", "test", "hardhat.config.ts"],
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  }
+}
+
+// {
+//   "compilerOptions": {
+//     "target": "es5", // Or a higher version like "es2015", "es2017" etc.
+//     "module": "commonjs", // Or "es2015", "esnext" depending on your module system
+//     "outDir": "./dist", // Specify the output directory for compiled JavaScript files
+//     "rootDir": "./src", // Specify the root directory for your TypeScript source files
+//     "strict": true, // Enable strict type checking
+//     "esModuleInterop": true, // Enable interop between CommonJS and ES modules
+//     "forceConsistentCasingInFileNames": true
+//   },
+//   "include": ["src/**/*"], // Include all files within the 'src' directory
+//   "exclude": ["node_modules"] // Exclude node_modules from compilation
+// }
