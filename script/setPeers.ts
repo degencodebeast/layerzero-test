@@ -66,25 +66,35 @@
 import { ethers } from 'ethers';
 
 // ABI for the OFTAdapter contract
-const OFTAdapterABI = [
-  "function isPeer(uint32 _eid, bytes32 _peer) view returns (bool)",
-  "function setPeer(uint32 _eid, bytes32 _peer)"
-];
+// const OFTAdapterABI = [
+//   "function isPeer(uint32 _eid, bytes32 _peer) view returns (bool)",
+//   "function setPeer(uint32 _eid, bytes32 _peer)"
+// ];
 
-const privateKey = process.env.DEPOLYER_KEY as string;
+
+import { abi as OFTAdapterABI } from '../deployments/sepolia-testnet/MyOFTAdapter.json'; 
+
+//const privateKey = process.env.DEPOLYER_KEY as string;
+//const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+
 
 // You'll need to specify your RPC URL
-const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+const rpcUrl = "https://eth-sepolia.g.alchemy.com/v2/wmmPIFmPi700hZkT_QuBCKRvsCpvJ-J9" 
 
-const destination_network = 'polygon';
-const destination_oft_contract = ethers.utils.hexZeroPad('0x6c4ef945552FAb67813dE5dbD497a33882E0cEc7', 32);
+const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
+
+const privateKey = ""
+
+const destination_network = 'avalanche';
+const destination_oft_contract = ethers.utils.hexZeroPad('0xA074Aa95C8C46501cD8077eDc67cf1E95C0C21BD', 32);
 
 const getEID = (network: string): number => {
   switch (network) {
     case 'mainnet':
       return 30101;
     case 'avalanche':
-      return 30106;
+      return 40106;
     case 'arbitrum':
       return 30110;
     case 'polygon':
@@ -103,7 +113,8 @@ async function main() {
     console.log(`${networkName} address : ${account} with balance ${balance.toString()}`);
 
     // You'll need to specify your adapter address
-    const adapter_address = process.env.ADAPTER_ADDRESS as string;
+    //const adapter_address = process.env.ADAPTER_ADDRESS as string;
+	const adapter_address = "0x81D9796e071D39CbEE043975002fFc03cbADc96f"
     if (!adapter_address) {
       throw new Error('Adapter address not specified');
     }
