@@ -4,6 +4,10 @@ import {EndpointId} from '@layerzerolabs/lz-definitions';
 import {addressToBytes32} from '@layerzerolabs/lz-v2-utilities';
 import {Options} from '@layerzerolabs/lz-v2-utilities';
 import {BigNumberish, BytesLike} from 'ethers';
+//import {ethers} from 'ethers';
+//import {deployments} from 'hardhat';
+import '@nomiclabs/hardhat-ethers';
+import 'hardhat-deploy';
 
 interface Args {
   amount: string;
@@ -29,9 +33,9 @@ task('lz:oft:send', 'Sends tokens from either OFT or OFTAdapter')
   .setAction(async (taskArgs: Args, {ethers, deployments}) => {
     const toAddress = taskArgs.to;
     const eidB = taskArgs.toEid;
-
+    const rpcUrl = process.env.RPC_URL_OPBNB || 'https://opbnb-testnet-rpc.bnbchain.org'; 
     // Get the contract factories
-    const oftDeployment = await deployments.get('MyOFT');
+    const oftDeployment = await deployments.get('USDeOFT');
 
     const [signer] = await ethers.getSigners();
 
@@ -65,17 +69,17 @@ task('lz:oft:send', 'Sends tokens from either OFT or OFTAdapter')
     const ERC20Factory = await ethers.getContractFactory('ERC20');
     const innerTokenAddress = await oft.token();
 
-    // // If the token address !== address(this), then this is an OFT Adapter
-    // if (innerTokenAddress !== oft.address) {
-    //     // If the contract is OFT Adapter, get decimals from the inner token
-    //     const innerToken = ERC20Factory.attach(innerTokenAddress);
+    // If the token address !== address(this), then this is an OFT Adapter
+    if (innerTokenAddress !== oft.address) {
+        // If the contract is OFT Adapter, get decimals from the inner token
+        const innerToken = ERC20Factory.attach(innerTokenAddress);
 
-    //     // Approve the amount to be spent by the oft contract
-    //     await innerToken.approve(oftDeployment.address, amount);
-    // }
+        // Approve the amount to be spent by the oft contract
+        await innerToken.approve(oftDeployment.address, amount);
+    }
 
     const r = await oft.send(sendParam, {nativeFee: nativeFee, lzTokenFee: 0}, signer.address, {
       value: nativeFee,
     });
-    console.log(`Send tx initiated. See: https://layerzeroscan.com/tx/${r.hash}`);
+    console.log(`Send tx initiated. See: https://testnet.layerzeroscan.com/tx/${r.hash}`);
   });

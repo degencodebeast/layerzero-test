@@ -59,7 +59,7 @@ const config: HardhatUserConfig = {
             url: process.env.RPC_URL_SEPOLIA || 'https://eth-sepolia.g.alchemy.com/v2/wmmPIFmPi700hZkT_QuBCKRvsCpvJ-J9',
             accounts,
             oftAdapter: {
-                tokenAddress: '0xf805ce4F96e0EdD6f0b6cd4be22B34b92373d696', // Set the token address for the OFT adapter
+                tokenAddress: '0x1B6877c6Dac4b6De4c5817925DC40E2BfdAFc01b', // Set the token address for the usde OFT adapter
             },
         },
         'avalanche-testnet': {
@@ -70,6 +70,11 @@ const config: HardhatUserConfig = {
         'amoy-testnet': {
             eid: EndpointId.AMOY_V2_TESTNET,
             url: process.env.RPC_URL_AMOY || 'https://polygon-amoy-bor-rpc.publicnode.com',
+            accounts,
+        },
+        'opbnb-testnet': {
+            eid: EndpointId.OPBNB_V2_TESTNET,
+            url: process.env.RPC_URL_OPBNB || 'https://opbnb-testnet.g.alchemy.com/v2/wmmPIFmPi700hZkT_QuBCKRvsCpvJ-J9',
             accounts,
         },
         hardhat: {

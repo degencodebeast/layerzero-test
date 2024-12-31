@@ -119,14 +119,16 @@
 
 import { ethers } from 'ethers';
 import dotenv from 'dotenv';
+import {task} from 'hardhat/config';
 
 dotenv.config();
 
-// const { ethers } = require('ethers');
-// require('dotenv').config();
 
-import { abi as OFTAdapterAbi } from '../deployments/sepolia-testnet/MyOFTAdapter.json'; 
-import {abi as ERC20Abi} from "../deployments/avalanche-testnet/MyOFT.json"
+import { abi as SUSDeOFTAdapterABI } from '../deployments/sepolia-testnet/SUSDeOFTAdapter.json';
+import { abi as USDeOFTAdapterABI } from '../deployments/sepolia-testnet/USDeOFTAdapter.json';
+import { abi as SUSDeOFTABI } from '../deployments/opbnb-testnet/SUSDeOFT.json';
+import { abi as USDeOFTABI } from '../deployments/opbnb-testnet/USDeOFT.json';
+
 import {Options} from '@layerzerolabs/lz-v2-utilities';
 import {getNetworkNameForEid, types} from '@layerzerolabs/devtools-evm-hardhat';
 import {EndpointId} from '@layerzerolabs/lz-definitions';
@@ -152,12 +154,25 @@ const privateKey = ""
 const recipientPrivateKey = ""
 const rpcUrl = "https://eth-sepolia.g.alchemy.com/v2/wmmPIFmPi700hZkT_QuBCKRvsCpvJ-J9" 
 
-const destinationNetwork = 'avalanche';
+const destinationNetwork = 'opbnb';
 const destinationOftContract = ethers.utils.hexZeroPad('0xA074Aa95C8C46501cD8077eDc67cf1E95C0C21BD', 32);
-const tokenAddress = '0xf805ce4F96e0EdD6f0b6cd4be22B34b92373d696';
-const adapterAddress = "0x81D9796e071D39CbEE043975002fFc03cbADc96f"
+
+const usdeTokenAddress = '0xf805ce4F96e0EdD6f0b6cd4be22B34b92373d696';
+const susdeTokenAddress = '0x1B6877c6Dac4b6De4c5817925DC40E2BfdAFc01b'
+
+
+const USDeOFTAdapterAddress = "0x7dA8F2F7EF7760E086c2b862cdDeBEFa8d969aa2"
+const bnbUSDeOFTAddress = "0x9E1eF5A92C9Bf97460Cd00C0105979153EA45b27"
+
+const SUSDeOFTAdapterAddress = "0x661a059C390e9f4f8Ae581d09eF0Cea6ECc124A4"
+const bnbSUSDeOFTAddress = "0x3a65168B746766066288B83417329a7F901b5569"
+
 const recipient = ethers.utils.hexZeroPad('0x5e869af2Af006B538f9c6D231C31DE7cDB4153be', 32);
 let options = Options.newOptions().addExecutorLzReceiveOption(65000, 0).toBytes();
+
+
+// // Get the contract factories
+// const oftDeployment = await deployments.get('MyOFT');
 
 
 const amount = ethers.utils.parseUnits('1', 18);
@@ -186,14 +201,14 @@ async function main() {
         console.log(`Network address: ${await signer.getAddress()} with balance ${await signer.getBalance()}`);
         console.log(`Recipient address: ${await recipientSigner.getAddress()} with balance ${await recipientSigner.getBalance()}`);
 
-        const adapter = new ethers.Contract(adapterAddress, OFTAdapterAbi, signer);
-        const token = new ethers.Contract(tokenAddress, ERC20Abi, signer);
+        const adapter = new ethers.Contract(USDeOFTAdapterAddress, USDeOFTAdapterABI, signer);
+        const token = new ethers.Contract(usdeTokenAddress, USDeOFTABI, signer);
 
-        const allowance = await token.allowance(signer.address, adapterAddress);
+        const allowance = await token.allowance(signer.address, USDeOFTAdapterAddress);
         console.log(`Allowance: ${allowance}`);
 
         if (allowance.lt(amount)) {
-            const tx = await token.approve(adapterAddress, amount);
+            const tx = await token.approve(USDeOFTAdapterAddress, amount);
             const receipt = await tx.wait();
             console.log('Approval successful', receipt.transactionHash);
         }
@@ -201,7 +216,7 @@ async function main() {
         let options = Options.newOptions().addExecutorLzReceiveOption(65000, 0).toBytes();
         const sendParams = {
             //dstEid: getEID(destinationNetwork),
-            dstEid: EndpointId.AVALANCHE_V2_TESTNET,
+            dstEid: EndpointId.OPBNB_V2_TESTNET,
             to: addressToBytes32(recipient),
             amountLD: amount,
             minAmountLD: amount,
@@ -238,7 +253,7 @@ async function main() {
 
         const r = await adapter.send(sendParams, {nativeFee: nativeFee, lzTokenFee: 0}, signer.address, {
             value: nativeFee,
-            gasLimit: 8000000
+           // gasLimit: 9000000
           });
         
         console.log(`Send tx initiated. See: https://testnet.layerzeroscan.com/tx/${r.hash}`);

@@ -19,17 +19,22 @@ import type { OAppOmniGraphHardhat, OmniPointHardhat } from '@layerzerolabs/tool
  */
 const sepoliaContract: OmniPointHardhat = {
     eid: EndpointId.SEPOLIA_V2_TESTNET,
-    contractName: 'MyOFTAdapter',
+    contractName: 'SUSDeOFTAdapter',
 }
 
 const fujiContract: OmniPointHardhat = {
     eid: EndpointId.AVALANCHE_V2_TESTNET,
-    contractName: 'MyOFT',
+    contractName: 'SUSDeOFT',
 }
 
-const amoyContract: OmniPointHardhat = {
-    eid: EndpointId.AMOY_V2_TESTNET,
-    contractName: 'MyOFT',
+// const amoyContract: OmniPointHardhat = {
+//     eid: EndpointId.AMOY_V2_TESTNET,
+//     contractName: 'USDeOFT',
+// }
+
+const opbnbContract: OmniPointHardhat = {
+    eid: EndpointId.OPBNB_V2_TESTNET,
+    contractName: 'USDeOFT',
 }
 
 const config: OAppOmniGraphHardhat = {
@@ -41,7 +46,7 @@ const config: OAppOmniGraphHardhat = {
             contract: sepoliaContract,
         },
         {
-            contract: amoyContract,
+            contract: opbnbContract,
         },
     ],
     connections: [
@@ -51,7 +56,7 @@ const config: OAppOmniGraphHardhat = {
         },
         {
             from: fujiContract,
-            to: amoyContract,
+            to: opbnbContract,
         },
         {
             from: sepoliaContract,
@@ -59,14 +64,14 @@ const config: OAppOmniGraphHardhat = {
         },
         {
             from: sepoliaContract,
-            to: amoyContract,
+            to: opbnbContract,
         },
         {
-            from: amoyContract,
+            from: opbnbContract,
             to: sepoliaContract,
         },
         {
-            from: amoyContract,
+            from: opbnbContract,
             to: fujiContract,
         },
     ],
